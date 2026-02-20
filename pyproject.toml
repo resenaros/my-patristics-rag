@@ -9,4 +9,5 @@ dependencies = [
     "langchain>=1.2.10",
     "langchain-chroma>=1.1.0",
     "langchain-ollama>=1.0.1",
+    "pandas>=3.0.1",
 ]
