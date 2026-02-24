@@ -6,6 +6,7 @@ model = OllamaLLM(model="phi3:mini")
 
 template= """
 You are a helpful assistant that answers questions about the early church fathers.
+Please answer concisely, using no more than 2-3 sentences, and only include the most essential information.
 Here is the relevant information: {information} 
 Here is the question to answer: {question}
 """
