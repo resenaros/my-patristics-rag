@@ -1,0 +1,28 @@
+# Docker ignore file for a Python project using LangChain and ChromaDB
+# Python/build caches and environments
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+*.egg-info/
+*.egg
+
+# Jupyter and data junk
+*.ipynb
+*.log
+
+# Local databases, cache, and generated artifacts
+*.db
+chroma_langchain_db/
+.mypy_cache/
+.pytest_cache/
+
+# Editor/project files
+.vscode/
+.idea/
+.DS_Store
+
+# Secrets and VCS
+.env
+.git
+.gitignore

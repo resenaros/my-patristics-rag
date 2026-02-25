@@ -1,3 +1,4 @@
+# app.py entry point for the RAG agent application
 from langchain_ollama.llms import OllamaLLM
 from langchain_core.prompts import ChatPromptTemplate
 from vector import retriever
@@ -48,4 +49,4 @@ iface = gr.Interface(
 )
 
 if __name__ == "__main__":
-    iface.launch(theme = gr.themes.Glass())
+    iface.launch(theme = gr.themes.Glass(), server_name = "0.0.0.0", server_port = 7860)

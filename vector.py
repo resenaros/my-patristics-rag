@@ -1,3 +1,4 @@
+# vector.py - Setting up the vector store using ChromaDB and Ollama embeddings
 from langchain_ollama import OllamaEmbeddings
 from langchain_chroma import Chroma
 from langchain_core.documents import Document
