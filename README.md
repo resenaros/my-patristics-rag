@@ -88,23 +88,42 @@ Learn more: [Hugging Face Spaces Docker Documentation](https://huggingface.co/do
 
 ---
 
-### 🔨 Docker Quickstart (Build & Run Locally)
+### 🔨 Docker Quickstart (Build, Run, and Prune)
 
-**Build the image:**
+**Build the image (recommended before every run):**
 ```sh
-docker build -t local-ai-agent-rag .
+docker build --progress=plain --no-cache -t local-ai-agent-rag .
 ```
 
-**Run the image:**
+**Run the container:**
 ```sh
-docker run -p 7860:7860 -p 11434:11434 local-ai-agent-rag
+docker run -it --rm -p 7860:7860 -p 11434:11434 local-ai-agent-rag
 ```
 
-**[Optional] Run with Docker Compose (local/dev only):**
+**[Optional] Use Docker Compose (for local/dev only):**
 ```sh
 docker compose up --build
 ```
-> You likely **do not need Compose on Spaces**. It is provided for multi-service local dev only.
+_Compose is not needed for Spaces, only for local multi-service development._
+
+**Prune unused Docker objects to reclaim disk space:**
+```sh
+# Remove stopped containers, unused images, networks, and build cache
+docker system prune -a
+
+# Also remove unused volumes (use with care)
+docker volume prune
+```
+
+---
+
+### 🛡️ Security Measures
+
+- Ran `pip-audit` to check Python dependencies for known vulnerabilities:
+  ```sh
+  uv pip install pip-audit
+  pip-audit
+  ```
 
 ---
 
