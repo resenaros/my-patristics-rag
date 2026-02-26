@@ -2,9 +2,12 @@ name: OWASP ZAP Baseline Scan
 
 on:
   push:
-    branches: [main]
+    branches: [master]
   pull_request:
-    branches: [main]
+    branches: [master]
+
+permissions:
+  contents: read
 
 jobs:
   zap_baseline:
