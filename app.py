@@ -4,7 +4,7 @@ from langchain_core.prompts import ChatPromptTemplate
 from vector import retriever
 import gradio as gr
 
-model = OllamaLLM(model = "phi3:mini")
+model = OllamaLLM(model="phi3:mini")
 
 template = """
 You are a helpful assistant that answers questions about the early church fathers.
@@ -30,23 +30,21 @@ def rag_agent(question):
                 refs.append(f"- {src}" + (f" by {author}" if author else ""))
                 seen.add(src)
     elif hasattr(information, "metadata"):
-       src = information.metadata.get("source")
-       author = information.metadata.get("author")
-       refs.append(f"- {src}" + (f" by {author}" if author else ""))
+        src = information.metadata.get("source")
+        author = information.metadata.get("author")
+        refs.append(f"- {src}" + (f" by {author}" if author else ""))
     else:
         refs.append("- No sources found")
     return result, "\n".join(refs)
 
-iface = gr.Interface(
-    fn = rag_agent,
-    inputs = gr.Textbox(lines = 2, label = "Ask a question about the early church fathers"),
-    outputs = [
-        gr.Textbox(label = "Answer"),
-        gr.Textbox(label = "References")
-    ],
-    title = "Church Fathers RAG Assistant",
-    description = "Ask anything about the early church fathers and get a concise answer from a local RAG agent."
-)
+with gr.Blocks(title="Church Fathers RAG Assistant", theme=gr.themes.Glass()) as demo:
+    gr.Markdown("Ask anything about the early church fathers and get a concise answer from a local RAG agent.")
+    with gr.Row():
+        question = gr.Textbox(lines=2, label="Ask a question about the early church fathers")
+        with gr.Column():
+            answer = gr.Textbox(label="Answer")
+            refs = gr.Textbox(label="References")
+    question.submit(rag_agent, question, [answer, refs])
 
 if __name__ == "__main__":
-    iface.launch(theme = gr.themes.Glass(), server_name = "0.0.0.0", server_port = 7860)
+    demo.launch(server_name="0.0.0.0", server_port=7860)

@@ -1,23 +1,21 @@
 #!/bin/bash
 set -e
 
-# Activate the Python virtual environment created by uv
-source /workspace/.venv/bin/activate
+# Activate Python virtual environment
+source /app/.venv/bin/activate
 
-# Start Ollama in the background
+# Start Ollama in background
 ollama serve &
 
-# Wait until Ollama server is ready before pulling models
+# Wait for Ollama to be ready (max 30 seconds)
 TRIES=0
 until curl -s http://localhost:11434/api/status >/dev/null || [ $TRIES -ge 30 ]; do
-  echo "Waiting for Ollama server to be available..."
+  echo "Waiting for Ollama server... ($TRIES/30)"
   sleep 1
   TRIES=$((TRIES+1))
 done
 
-# Pull required models
-ollama pull phi3:mini
-ollama pull nomic-embed-text
+echo "Ollama is ready!"
 
-# Start your Gradio RAG app
+# Start Gradio RAG app (models already preloaded in Dockerfile)
 exec python app.py
