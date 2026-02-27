@@ -30,6 +30,9 @@ jobs:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
           git clone https://huggingface.co/spaces/ara967/patristics-rag-agent-demo space-repo
+          cd space-repo
+          git fetch --unshallow || true    # Fix shallow update error
+          cd ..
           rsync -a --exclude='space-repo' . space-repo/
           cd space-repo
           git add .
