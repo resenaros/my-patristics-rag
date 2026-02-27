@@ -17,5 +17,9 @@ done
 
 echo "Ollama is ready!"
 
+# Pull required models
+ollama pull phi3:mini
+ollama pull nomic-embed-text
+
 # Start Gradio RAG app (models already preloaded in Dockerfile)
 exec python app.py

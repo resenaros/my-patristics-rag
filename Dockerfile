@@ -13,10 +13,6 @@ RUN curl -L https://github.com/astral-sh/uv/releases/latest/download/uv-x86_64-u
 # Install Ollama
 RUN curl -fsSL https://ollama.com/install.sh | sh
 
-# Preload models during build (cached in image, no pull on restart)
-RUN ollama pull phi3:mini
-RUN ollama pull nomic-embed-text
-
 # Create non-root user (HF Spaces requirement)
 RUN useradd -m -u 1000 appuser
 
