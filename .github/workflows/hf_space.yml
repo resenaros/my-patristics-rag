@@ -18,7 +18,7 @@ jobs:
           echo "$HOME/.local/bin" >> $GITHUB_PATH
 
       - name: Install Hugging Face CLI
-        run: uv pip install --upgrade huggingface_hub
+        run: pip install --upgrade huggingface_hub
 
       - name: Configure Git
         run: |
