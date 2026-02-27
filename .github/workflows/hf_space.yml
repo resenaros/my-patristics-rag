@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:  # Allow manual trigger
 
 permissions:
   contents: read
@@ -12,32 +13,13 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v3
-
-      - name: Install uv
-        run: |
-          curl -Ls https://astral.sh/uv/install.sh | sh
-          echo "$HOME/.local/bin" >> $GITHUB_PATH
-
-      - name: Install Hugging Face CLI
-        run: pip install --upgrade huggingface_hub
-
-      - name: Configure Git
-        run: |
-          git config --global user.email "actions@github.com"
-          git config --global user.name "GitHub Actions"
-
-      - name: Sync and Deploy to HF Space repo
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Fetch all history
+          lfs: true       # Enable Git LFS
+      
+      - name: Push to Hugging Face Space
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
-          git clone https://huggingface.co/spaces/ara967/patristics-rag-agent-demo space-repo
-          cd space-repo
-          git fetch --unshallow || true    # Fix shallow update error
-          cd ..
-          rsync -a --exclude='space-repo' --exclude='.github' . space-repo/
-          cd space-repo
-          git add .
-          git commit -m "Deploy from GitHub $(date +"%Y-%m-%d %H:%M:%S")" || echo "Nothing to commit"
-          git push --force https://ara967:${HF_TOKEN}@huggingface.co/spaces/ara967/patristics-rag-agent-demo main
+          git push https://ara967:${HF_TOKEN}@huggingface.co/spaces/ara967/patristics-rag-agent-demo main
