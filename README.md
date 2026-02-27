@@ -1,18 +1,30 @@
+---
+title: Patristics Rag Agent Demo
+emoji: 🐢
+colorFrom: red
+colorTo: pink
+sdk: docker
+pinned: false
+license: mit
+short_description: A Retrieval-Augmented Generation (RAG) agent using Gradio and LangChain.
+---
+
+Check out the configuration reference at [https://huggingface.co/docs/hub/spaces-config-reference](https://huggingface.co/docs/hub/spaces-config-reference)
+
 # Local AI Agent (RAG): Ollama + LangChain + Gradio
 
 A locally hosted Retrieval-Augmented Generation (RAG) AI agent powered by:
-
 - **Ollama** (local LLM runtime)
 - **LangChain** (RAG orchestration)
 - **Chroma** (vector store)
 - **Gradio** (GUI & API)
 - **pandas** (CSV data handling)
 
-## ⭐️ Project Features
+## ⭐️ Features
 
 - Modular, clean RAG pipeline
 - Fully local LLM with Ollama
-- Easy exchange to other LLM providers
+- Easily switched to other LLM providers
 - Self-contained dependencies for reproducibility
 - GUI and API access
 - Docker-ready for Hugging Face Spaces deployment
@@ -40,8 +52,6 @@ source .venv/bin/activate
 pip install langchain langchain-chroma langchain-ollama gradio pandas
 ```
 
----
-
 ### 2. Prepare your CSV database
 
 Main retrieval file: `patristics.csv`  
@@ -51,8 +61,6 @@ author,text,source
 Ignatius of Antioch,"Where the bishop appears, there let the congregation be.","Letter to the Smyrnaeans"
 ```
 Loaded into Chroma vector DB via `vector.py`.
-
----
 
 ### 3. Run locally
 
@@ -70,8 +78,8 @@ uv run python app.py
 ## 🐳 Docker Deployment (Hugging Face Spaces & Local Docker)
 
 **For Hugging Face Spaces:**
-- A `Dockerfile` specifying all dependencies and startup commands **(required)**
-- An `app.py` as the entrypoint for Gradio (required)
+- A `Dockerfile` specifying dependencies/startup commands (**required**)
+- An `app.py` as the entrypoint for Gradio (**required**)
 - `[Optional]` An `entrypoint.sh` for managing Ollama and Gradio together (multi-process startup)
 - `patristics.csv` and other code files in project root
 
@@ -82,7 +90,7 @@ uv run python app.py
 - Installs Python requirements
 - Starts Ollama and Gradio
 
-> See `Dockerfile` (and `entrypoint.sh` if present) in this repo for details.
+See `Dockerfile` (and `entrypoint.sh` if present) for details.
 
 Learn more: [Hugging Face Spaces Docker Documentation](https://huggingface.co/docs/hub/spaces-docker-overview)
 
@@ -90,28 +98,25 @@ Learn more: [Hugging Face Spaces Docker Documentation](https://huggingface.co/do
 
 ### 🔨 Docker Quickstart (Build, Run, and Prune)
 
-**Build the image (recommended before every run):**
+**Build:**
 ```sh
 docker build --progress=plain --no-cache -t local-ai-agent-rag .
 ```
 
-**Run the container:**
+**Run:**
 ```sh
 docker run -it --rm -p 7860:7860 -p 11434:11434 local-ai-agent-rag
 ```
 
-**[Optional] Use Docker Compose (for local/dev only):**
+**[Optional] Docker Compose (local only):**
 ```sh
 docker compose up --build
 ```
-_Compose is not needed for Spaces, only for local multi-service development._
+_Compose is not needed for Spaces, only for local development._
 
-**Prune unused Docker objects to reclaim disk space:**
+**Prune unused Docker objects:**
 ```sh
-# Remove stopped containers, unused images, networks, and build cache
 docker system prune -a
-
-# Also remove unused volumes (use with care)
 docker volume prune
 ```
 
@@ -119,7 +124,7 @@ docker volume prune
 
 ### 🛡️ Security Measures
 
-- Ran `pip-audit` to check Python dependencies for known vulnerabilities:
+- Ran `pip-audit` to check Python dependencies for vulnerabilities:
   ```sh
   uv pip install pip-audit
   pip-audit
@@ -142,7 +147,7 @@ local-ai-agent-rag/
 └── entrypoint.sh            # [Optional] Multi-process start script
 ```
 
-**.gitignore** (example):
+**.gitignore**:
 ```
 chroma_langchain_db/
 .venv/
@@ -150,7 +155,7 @@ chroma_langchain_db/
 __pycache__/
 ```
 
-**.dockerignore** (example):
+**.dockerignore**:
 ```
 .venv/
 __pycache__/
@@ -176,7 +181,7 @@ chroma_langchain_db/
 
 - Ollama enables fully local LLM inference for privacy and speed.
 - Not natively supported on Spaces—**Docker deployment is required**.
-- The container will run Ollama and Gradio together by default.
+- The container will run Ollama and Gradio together.
 
 ---
 
@@ -203,5 +208,3 @@ Supports both **uv** and **pip**:
 - Ensure `app.py`, `Dockerfile`, `[optional] entrypoint.sh`, and `patristics.csv` are in your repo root.
 - Push to Hugging Face Spaces repo.
 - Environment is built from your Dockerfile; no Compose file is needed for Spaces.
-
----
