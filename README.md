@@ -6,7 +6,7 @@ colorTo: pink
 sdk: docker
 pinned: false
 license: mit
-short_description: A Retrieval-Augmented Generation (RAG) agent using Gradio and LangChain.
+short_description: RAG agent with Gradio and LangChain
 ---
 
 Check out the configuration reference at [https://huggingface.co/docs/hub/spaces-config-reference](https://huggingface.co/docs/hub/spaces-config-reference)
