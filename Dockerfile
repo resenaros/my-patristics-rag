@@ -1,33 +1,44 @@
 FROM python:3.11-slim
 
-# Install minimal runtime dependencies for Ollama and uv
+# Install system dependencies
 RUN apt-get update && \
     apt-get install -y curl zstd && \
     rm -rf /var/lib/apt/lists/*
 
-# Download and install the prebuilt uv binary
-RUN curl -L https://github.com/astral-sh/uv/releases/latest/download/uv-x86_64-unknown-linux-gnu.tar.gz | tar xz
-RUN mv uv*/uv /usr/local/bin/uv && chmod +x /usr/local/bin/uv
+# Install uv
+RUN curl -L https://github.com/astral-sh/uv/releases/latest/download/uv-x86_64-unknown-linux-gnu.tar.gz | tar xz && \
+    mv uv*/uv /usr/local/bin/uv && \
+    chmod +x /usr/local/bin/uv
 
 # Install Ollama
 RUN curl -fsSL https://ollama.com/install.sh | sh
 
-WORKDIR /workspace
+# Preload models during build (cached in image, no pull on restart)
+RUN ollama pull phi3:mini
+RUN ollama pull nomic-embed-text
 
-# Copy all project files, including pyproject.toml, code, and entrypoint
+# Create non-root user (HF Spaces requirement)
+RUN useradd -m -u 1000 appuser
+
+WORKDIR /app
+
+# Copy project files
 COPY . .
 
-# Ensure entrypoint.sh is executable
-RUN chmod +x entrypoint.sh
+# Make entrypoint executable and install dependencies
+RUN chmod +x entrypoint.sh && \
+    uv sync && \
+    chown -R appuser:appuser /app
 
-# Optional: Output uv version for build logs
-RUN uv --version
+# Switch to non-root user
+USER appuser
 
-# Install all Python project dependencies into a .venv using uv (with pyproject.toml)
-RUN uv sync
-
-# Expose the web ports Gradio and Ollama will use
+# Expose ports
 EXPOSE 7860 11434
 
-# Start everything: activates venv, launches Ollama and app
+# Health check for HF Space status monitoring
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+  CMD curl -f http://localhost:7860/ || exit 1
+
+# Start application
 CMD ["./entrypoint.sh"]
