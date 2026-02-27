@@ -1,0 +1,37 @@
+name: Deploy to Hugging Face Space
+
+on:
+  push:
+    branches:
+      - master   
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Install uv
+        run: |
+          curl -Ls https://astral.sh/uv/install.sh | sh
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+      - name: Install Hugging Face CLI
+        run: uv pip install --upgrade huggingface_hub
+
+      - name: Configure Git
+        run: |
+          git config --global user.email "actions@github.com"
+          git config --global user.name "GitHub Actions"
+
+      - name: Clone HF Space repo
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: |
+          git clone https://huggingface.co/spaces/ara967/patristics-rag-agent-demo space-repo
+          rsync -a --exclude='space-repo' . space-repo/
+          cd space-repo
+          git add .
+          git commit -m "Deploy from GitHub $(date +"%Y-%m-%d %H:%M:%S")" || echo "Nothing to commit"
+          git push https://ara967:${HF_TOKEN}@huggingface.co/spaces/ara967/patristics-rag-agent-demo master
