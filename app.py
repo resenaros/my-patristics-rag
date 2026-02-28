@@ -39,13 +39,12 @@ def rag_agent(question):
 
 with gr.Blocks(title="Church Fathers RAG Assistant", theme=gr.themes.Glass()) as demo:
     gr.Markdown("Ask anything about the early church fathers and get a concise answer from a local RAG agent.")
-    with gr.Row():
-        question = gr.Textbox(lines = 1, max_lines = 5, label="Ask a question about the early church fathers")
-        submit_btn = gr.Button("Submit")
-        gr.Markdown("*Press Enter to submit, Shift + Enter for a new line, or use the Submit button.*")
-        with gr.Column():
-            answer = gr.Textbox(label="Answer")
-            refs = gr.Textbox(label="References")
+    question = gr.Textbox(lines = 1, max_lines = 5, label="Ask a question about the early church fathers")
+    submit_btn = gr.Button("Submit")
+    gr.Markdown("*Press Enter to submit, Shift + Enter for a new line, or use the Submit button.*")
+    with gr.Column():
+        answer = gr.Textbox(label="Answer")
+        refs = gr.Textbox(label="References")
     question.submit(rag_agent, question, [answer, refs])
     submit_btn.click(rag_agent, question, [answer, refs])
 
