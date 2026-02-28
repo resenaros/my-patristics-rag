@@ -16,5 +16,15 @@ jobs:
       - name: Run ZAP full scan
         uses: zaproxy/action-full-scan@v0.7.0
         with:
+          docker_name: 'zaproxy/zap-stable'
           target: 'http://localhost:7860'
         continue-on-error: true
+
+      - name: Upload ZAP report
+        uses: actions/upload-artifact@v4
+        with:
+          name: zap-full-report
+          path: |
+            report_html.html
+            report_md.md
+            report_json.json
